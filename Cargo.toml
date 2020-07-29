@@ -1,0 +1,9 @@
+[package]
+name = "evolution"
+version = "0.1.0"
+authors = ["Ian Smith <isilversmith810@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+rand = "0.7.3"
+rand_distr = "0.2.2"
