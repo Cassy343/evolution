@@ -26,25 +26,26 @@ mod tests {
         use rand::prelude::*;
         use rand::distributions::Uniform;
 
-        let mut pop: Population<OwnedGenome<[Ordered<i32>; 5]>, _> = Population::with_loss(
+        let mut pop: Population<OwnedGenome<(f64, f64)>, _> = Population::with_loss(
             40,
             EnvSettings::default(),
-            |indv: &OwnedGenome<[Ordered<i32>; 5]>| {
-                indv.genome.iter().map(|ch| ch.value).sum::<i32>().abs() as f64
+            |indv: &OwnedGenome<(f64, f64)>| {
+                let x = indv.genome.0;
+                let y = indv.genome.1;
+                let h = x * x - y * y;
+                let k = 1.0 - x;
+                100.0 * h * h + k * k
             }
         );
-
-        let distr = Uniform::new(-5, 5);
+        
+        let distr = Uniform::new(-2.0f64, 2.0f64);
         pop.initialize(|rng| {
-            [
-                Ordered::weighted(distr.sample(&mut *rng), 3.0),
-                Ordered::weighted(distr.sample(&mut *rng), 3.0),
-                Ordered::weighted(distr.sample(&mut *rng), 3.0),
-                Ordered::weighted(distr.sample(&mut *rng), 3.0),
-                Ordered::weighted(distr.sample(&mut *rng), 3.0)
-            ]
+            (
+                distr.sample(&mut *rng),
+                distr.sample(&mut *rng)
+            )
         });
-
+        
         pop.evolve_until(0.001);
         println!("{}", pop.loss());
     }
